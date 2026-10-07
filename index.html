@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Skill composition for legged robot reinforcement learning: bridging and blending specialized policies.">
+  <meta name="keywords" content="skill composition, humanoid, legged robots, reinforcement learning, blending, bridging">
+  <title>Skill Composition for Legged Robots</title>
+
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  <link rel="stylesheet" href="static/css/index.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🤖</text></svg>">
+
+  <script defer src="static/js/index.js"></script>
+</head>
+<body>
+
+<nav class="navbar" role="navigation" aria-label="main navigation">
+  <div class="navbar-brand">
+    <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="nav-menu">
+      <span aria-hidden="true"></span><span aria-hidden="true"></span><span aria-hidden="true"></span>
+    </a>
+  </div>
+  <div id="nav-menu" class="navbar-menu">
+    <div class="navbar-start" style="flex-grow: 1; justify-content: center;">
+      <a class="navbar-item" href="#top"><span class="icon"><i class="fas fa-home"></i></span></a>
+      <a class="navbar-item" href="#problem">Problem Definition</a>
+      <a class="navbar-item" href="#bridging">Bridging</a>
+      <a class="navbar-item" href="#blending">Blending</a>
+    </div>
+  </div>
+</nav>
+
+<section class="hero" id="top">
+  <div class="hero-body">
+    <div class="container is-max-desktop has-text-centered">
+      <h1 class="title is-1 publication-title">Skill Composition for Legged Robot Reinforcement Learning</h1>
+      <div class="is-size-5 publication-authors">
+        <span class="author-block"><a href="https://orcid.org/0009-0002-1485-5539">Daniel Gigliotti</a><sup>1,†</sup>,</span>
+        <span class="author-block"><a href="https://orcid.org/0009-0003-2059-7254">Flavio Maiorana</a><sup>1,†</sup>,</span>
+        <span class="author-block"><a href="https://orcid.org/0000-0002-9116-251X">Fabio Patrizi</a><sup>1</sup>,</span>
+        <span class="author-block"><a href="https://orcid.org/0000-0001-9057-8946">Luca Iocchi</a><sup>1</sup></span>
+      </div>
+      <div class="is-size-6 publication-authors">
+        <span class="author-block"><sup>1</sup>Sapienza University of Rome</span>
+        <span class="author-block">&nbsp;&nbsp;<sup>†</sup>Equal contribution</span>
+      </div>
+      <div class="is-size-5 publication-venue" style="margin: 0.5rem auto 0;">AIRO 2026 @ AIxIA 2026</div>
+
+      <div class="publication-links">
+        <span class="link-block">
+          <a href="static/pdfs/skill_composition.pdf" class="button is-normal is-rounded is-dark">
+            <span class="icon"><i class="fas fa-file-pdf"></i></span><span>Paper</span>
+          </a>
+        </span>
+        <span class="link-block">
+          <a href="#" class="button is-normal is-rounded is-dark" title="Coming soon">
+            <span class="icon"><i class="ai ai-arxiv"></i></span><span>arXiv</span>
+          </a>
+        </span>
+        <span class="link-block">
+          <a href="https://github.com/neverorfrog/colosseum" class="button is-normal is-rounded is-dark">
+            <span class="icon"><i class="fab fa-github"></i></span><span>Code</span>
+          </a>
+        </span>
+        <span class="link-block">
+          <a href="#bibtex" class="button is-normal is-rounded is-dark">
+            <span class="icon"><i class="fas fa-quote-right"></i></span><span>BibTeX</span>
+          </a>
+        </span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Abstract -->
+<section class="section">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Abstract</h2>
+        <div class="content has-text-justified">
+          <p>
+            Robots, and humanoid robots in particular, are increasingly competent at individual behaviors,
+            each obtained by training a specialized controller. A specialized skill is quick to train, 
+            can be validated on its own and converges reliably because the problem it faces is narrow.
+            None of this is true of a single end-to-end policy asked to cover everything. What remains
+            fragile is the transition between specialized skills. We argue that the composition of independent
+            sub-policies deserves to be treated as a research problem in its own right, rather than as an
+            implementation detail left to whatever mechanism happens to be at hand.
+          </p>
+          <p>
+            Reliable composition is what turns a collection of separate skills into a repertoire that can
+            be used, extended and shared. More fundamentally, if control can be passed between specialized
+            policies safely and reliably, the choice of what the robot should do next can be delegated to 
+            a component of an entirely different nature, such as a planner, whose decisions can be
+            verified before execution.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Problem -->
+<section class="section" id="problem">
+  <div class="container is-max-desktop">
+    <h2 class="title is-3">Problem Definition</h2>
+    <div class="content">
+      <p>
+        Many tasks are made of regimes that can be learned separately: walking, jumping, kicking a ball.
+        Each regime gets its own skill, or expert, <i>π<sub>i</sub></i>, trained and validated on its own.
+        The question is how to combine these experts into a single controller that solves
+        the whole task as well as an end-to-end policy would, while keeping them independent and reusable.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- Taxonomy -->
+<section class="section" id="taxonomy">
+  <div class="container is-max-desktop">
+    <h2 class="title is-3">Taxonomy of Skill Composition</h2>
+    <div class="content">
+      <p>
+        We identify two parallel ways of composing experts, which differ in what the decision layer above
+        them outputs. In <a href="#bridging">bridging</a>, a decision layer <i>σ</i> names one active expert
+        at a time. In <a href="#blending">blending</a>, a decision layer <i>ω</i> weights the contribution 
+        of several experts, and their actions are merged into a single command.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- Bridging -->
+<section class="section thread-section" id="bridging">
+  <div class="container is-max-desktop">
+    <h2 class="title is-3">Bridging</h2>
+
+    <h3 class="title is-4">Overview</h3>
+    <div class="content">
+      <p>
+        Bridging is sequential composition: one expert controls the robot at a time, and the decision layer
+        decides which. The difficulty lies in the handover. An expert only succeeds from the states it was
+        trained on, its initiation set, so control can pass safely only if the robot is inside the
+        incoming expert's set at the moment of the switch. Bridging is the problem of making that
+        happen, and it can be solved in several ways:
+      </p>
+      <ul>
+        <li>Shape the outgoing expert so that it ends inside the incoming expert's initiation set, as in skill chaining.</li>
+        <li>Widen the incoming expert's initiation set, so that it accepts whatever the outgoing one leaves behind.</li>
+        <li>Choose the moment of the switch, waiting until the robot happens to be in a suitable state.</li>
+        <li>Insert a transition policy between the two experts, which steers the robot to the other expert's initiation set.</li>
+      </ul>
+      <p>Existing approaches fall short:</p>
+      <ul>
+        <li>Skill chaining assumes the outgoing skill runs to its natural end. Here the switch comes from outside, at an arbitrary moment, so nothing guarantees the robot is in a state the next skill can start from.</li>
+        <li>Methods that tune or widen the experts so they fit together give up their independence: adding a skill means revisiting the others.</li>
+        //TODO add a third list item
+      </ul>
+    </div>
+
+    <h3 class="title is-4">Method</h3>
+    <div class="content">
+      <p>
+        We bridge with a transition policy, called bridge, keeping every expert frozen. When the decision layer asks for a
+        different expert, the bridge takes control immediately. Its only job is to leave the robot in a
+        state the incoming expert can take over from, whatever state the outgoing one left behind. Once the
+        handover is done, the bridge disappears.
+      </p>
+    </div>
+
+    <h3 class="title is-4">Results</h3>
+
+    <div class="result">
+      <h4 class="title is-6">Humanoid: jumping while walking</h4>
+      <video class="result-video" autoplay muted loop playsinline controls preload="metadata" poster="static/images/bridging_walk2jump.png">
+        <source src="static/videos/bridging_walk2jump.mp4" type="video/mp4">
+      </video>
+      <p class="caption">
+        A Unitree G1 alternates between a frozen walking skill and a frozen jumping skill trained from rest.
+        The bridge carries it from mid stride into a crouch the jump can start from. The ghost shows the 
+        nominal jump, as performed from the states the skill was trained on.
+      </p>
+    </div>
+
+    <div class="result">
+      <h4 class="title is-6">Cart-pole: swing up to balance</h4>
+      <video class="result-video" autoplay muted loop playsinline controls preload="metadata">
+        <source src="static/videos/bridging_cartpole.mp4" type="video/mp4">
+      </video>
+      <p class="caption">
+        A swing up skill pumps energy into the pole but cannot balance it; a balancer holds it upright but
+        only works near vertical. Hand over too early or too late and the pole is lost. The bridge guides
+        the system into a state from which the balancer can succeed.
+      </p>
+    </div>
+
+    <div class="result">
+      <h4 class="title is-6">Differential drive: cruise to tight turn</h4>
+      <video class="result-video" autoplay muted loop playsinline controls preload="metadata">
+        <source src="static/videos/bridging_diffdrive.mp4" type="video/mp4">
+      </video>
+      <p class="caption">
+        A fast straight line drive meets a tight turn that is safe only at low speed and rolls the chassis
+        if entered at cruise. The difficulty is speed, not timing: the bridge sheds exactly as much of it as
+        the turn requires, bringing the robot into a state from which the turn can be executed safely.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- Blending -->
+<section class="section thread-section" id="blending">
+  <div class="container is-max-desktop">
+    <h2 class="title is-3">Blending</h2>
+
+    <h3 class="title is-4">Overview</h3>
+    <div class="content">
+      <p>
+        Blending runs several experts at once and merges their outputs, weighted by a decision layer that
+        gives each expert a share of the command. A change of regime is absorbed by the merge itself, so no
+        extra mechanism is needed at the moment the experts' involvement changes. This suits tasks that are
+        genuinely a superposition of skills, such as moving while manipulating or kicking.
+      </p>
+    </div>
+
+    <h3 class="title is-4">Method</h3>
+    <div class="content">
+      <ul>
+        <li>Two experts on a humanoid ball kicking task: a frozen locomotion policy that tracks velocity commands, and a kicking policy trained as a residual on top of it.</li>
+        <li>A learned orchestrator watches the robot and the ball and outputs blend weights, independently per joint.</li>
+        <li>The two Gaussian action distributions are merged as a weighted product, so the more confident expert dominates where it is weighted more.</li>
+        <li>The orchestrator starts almost entirely on locomotion, and kick strength and kick weight are penalized: the residual gains authority only where it earns it.</li>
+        <li>Only the kick and the orchestrator are trained; rewards are split into groups, each with its own critic.</li>
+        <li>No dedicated recovery skill: post kick states already fall within what the locomotion policy recovers from.</li>
+      </ul>
+      <p>
+        The orchestrator learns by itself to favor the kick only close to the ball, recovering the intuitive
+        far/near behavior without it being imposed as a rule.
+      </p>
+    </div>
+
+    <h3 class="title is-4">Results</h3>
+
+    <div class="result">
+      <h4 class="title is-6">Blended kick on a real humanoid</h4>
+      <video class="result-video" autoplay muted loop playsinline controls preload="metadata">
+        <source src="static/videos/blending_kick_switch.mp4" type="video/mp4">
+      </video>
+      <p class="caption">
+        The robot walks towards the ball, adjusts its stride, kicks with the blended action and recovers
+        back into locomotion, all without a hand designed switching rule.
+      </p>
+    </div>
+</section>
+
+<!-- BibTeX -->
+<section class="section" id="bibtex">
+  <div class="container is-max-desktop content">
+    <h2 class="title is-3">BibTeX</h2>
+    <pre class="bibtex"><button class="button is-small copy-bibtex">Copy</button><code>@inproceedings{gigliotti2026composition,
+  title     = {Skill Composition for Legged Robot Reinforcement Learning},
+  author    = {Gigliotti, Daniel and Maiorana, Flavio and Patrizi, Fabio and Iocchi, Luca},
+  booktitle = {Workshop on Artificial Intelligence and Robotics (AIRO 2026 @ AIxIA 2026)},
+  year      = {2026}
+}</code></pre>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="container">
+    <div class="columns is-centered">
+      <div class="column is-8">
+        <div class="content has-text-centered">
+          <p>
+            Website layout inspired by
+            <a href="https://github.com/nerfies/nerfies.github.io">Nerfies</a>,
+            <a href="https://research.nvidia.com/labs/par/maskedmimic/">MaskedMimic</a>,
+            <a href="https://omniretarget.github.io/">OmniRetarget</a>,
+            <a href="https://beyondmimic.github.io/">BeyondMimic</a> and
+            <a href="https://php-parkour.github.io/">PHP</a>.
+            Licensed under <a href="http://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

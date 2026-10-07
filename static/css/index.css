@@ -1,0 +1,87 @@
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Noto Sans', sans-serif;
+}
+
+.publication-title,
+.publication-authors {
+  font-family: 'Google Sans', sans-serif;
+}
+
+.publication-title {
+  line-height: 1.2 !important;
+}
+
+.publication-authors a {
+  color: hsl(204, 86%, 53%) !important;
+}
+
+.publication-authors a:hover {
+  text-decoration: underline;
+}
+
+.author-block {
+  display: inline-block;
+}
+
+.publication-venue {
+  color: #555;
+  width: fit-content;
+  font-weight: bold;
+}
+
+.publication-links {
+  margin-top: 1rem;
+}
+
+.link-block a {
+  margin: 0.25rem 0.1rem;
+}
+
+.content p {
+  text-align: justify;
+}
+
+.thread-section h3.title {
+  margin-top: 2rem;
+}
+
+/* One video per result, stacked, with its description below */
+.result {
+  margin-bottom: 2.5rem;
+}
+
+.result-video {
+  display: block;
+  width: 100%;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  background: #000;
+}
+
+.result-video.is-portrait {
+  max-width: 360px;
+  margin: 0 auto;
+}
+
+.caption {
+  color: #555;
+  font-size: 0.95rem;
+  margin-top: 0.75rem;
+  text-align: justify;
+}
+
+pre.bibtex {
+  position: relative;
+  white-space: pre-wrap;
+  font-size: 0.85rem;
+}
+
+.copy-bibtex {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+}
