@@ -78,10 +78,24 @@ pre.bibtex {
   position: relative;
   white-space: pre-wrap;
   font-size: 0.85rem;
+  padding-right: 3.5rem;
 }
 
 .copy-bibtex {
   position: absolute;
-  top: 0.5rem;
+  top: 1rem;
   right: 0.5rem;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: #4a4a4a;
+  cursor: pointer;
+}
+
+.copy-bibtex .material-symbols-outlined {
+  font-size: 1.75rem;
+}
+
+.copy-bibtex:hover {
+  color: #000;
 }

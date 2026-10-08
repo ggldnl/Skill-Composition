@@ -12,8 +12,9 @@ document.addEventListener('DOMContentLoaded', () => {
     button.addEventListener('click', async () => {
       const code = button.parentElement.querySelector('code').innerText;
       await navigator.clipboard.writeText(code);
-      button.textContent = 'Copied';
-      setTimeout(() => (button.textContent = 'Copy'), 1500);
+      const icon = button.querySelector('.material-symbols-outlined');
+      icon.textContent = 'check';
+      setTimeout(() => (icon.textContent = 'content_copy'), 1500);
     });
   });
 });
